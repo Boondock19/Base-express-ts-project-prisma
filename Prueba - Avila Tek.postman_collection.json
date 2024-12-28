@@ -1,0 +1,228 @@
+{
+	"info": {
+		"_postman_id": "43a0f686-011b-4330-bc35-328a1f23da45",
+		"name": "Prueba - Avila Tek",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15636194"
+	},
+	"item": [
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "Get Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/users?page=5&limit=4",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "5"
+								},
+								{
+									"key": "limit",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get current User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "avila-token",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NjBmZDlmNTNhMDllYWMzMzU5ZDE5YSIsImlhdCI6MTcwMDg1NTIxMCwiZXhwIjoxNzAwODc2ODEwfQ.Vda936CEEK2UmHn_X0ms8KZYRy7BJbP0qlJs9A764LY",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/users/currentuser",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"currentuser"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "alocha-token",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjEsImlhdCI6MTcwMDY4ODU5OCwiZXhwIjoxNzAwNjk5Mzk4fQ.RiHLI9A9y59O4OfiAlw7y5VZjXrJ6FUPOi2Vtj9s3Do",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"test18\",\r\n    \"email\": \"test18@gmail.com\",\r\n    \"password\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/users/signup",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "authenticate",
+			"item": [
+				{
+					"name": "signin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "alocha-token",
+								"value": "Bearer ",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"test18\",\r\n    \"password\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/auth/signin",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"signin"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "New Request",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"joseg@gmail.com\",\r\n    \"password\": \"123456\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/auth/login",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "254"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"fe-NgVZBz8KxrC4uaEC80MjTx3fajc\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 21 Nov 2023 20:42:05 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"user\": {\n        \"id\": 21,\n        \"name\": \"Jose Matias\",\n        \"email\": \"joseg@gmail.com\",\n        \"status\": true\n    },\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjoyMSwiaWF0IjoxNzAwNTk5MzI1LCJleHAiOjE3MDA2MTAxMjV9.TW6vKSKhDuxpgRUS5UAigP2O620opk81-Co7e1jTo1c\"\n}"
+						}
+					]
+				},
+				{
+					"name": "signout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "avila-token",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NjBmZDlmNTNhMDllYWMzMzU5ZDE5YSIsImlhdCI6MTcwMDg1NTIxMCwiZXhwIjoxNzAwODc2ODEwfQ.Vda936CEEK2UmHn_X0ms8KZYRy7BJbP0qlJs9A764LY",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/auth/signout",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"signout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
