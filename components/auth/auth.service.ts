@@ -1,8 +1,8 @@
 import { comparePassword } from '../../helpers/passwordEncrypt';
 import mongoose from 'mongoose';
-import { User } from '../../models/user';
 import { generateJWT } from '../../helpers/generateJWT';
 import { TLoginInput } from './auth.dto';
+import { prisma } from '../../db/prismaClient';
 
 // Necesitamos esta constante para poder hacer cast de un string a un ObjectId de mongo.
 const ObjectId = mongoose.Types.ObjectId;
@@ -16,12 +16,17 @@ const ObjectId = mongoose.Types.ObjectId;
  * @returns al usuario con su sesion activa y el token generado.
  */
 
+const prismaUser = prisma.user;
 export const loginUser = async (data: TLoginInput) => {
   const { username, password } = data;
   try {
     // Verificar que el usuario exista en DB.
     // El username es unico por definicion de la coleccion
-    const foundUser = await User.findOne({ username });
+    const foundUser = await prismaUser.findUnique({
+      where: {
+        username,
+      },
+    });
 
     if (!foundUser) throw new Error('Usuario o contraseña incorrectos');
 
@@ -44,9 +49,16 @@ export const loginUser = async (data: TLoginInput) => {
 
     const token = generateJWT(foundUser.id);
 
-    await foundUser.save();
+    const updatedUser = await prismaUser.update({
+      where: {
+        id: foundUser.id,
+      },
+      data: {
+        session: true,
+      },
+    });
 
-    return { foundUser, token };
+    return { foundUser: updatedUser, token };
   } catch (error) {
     console.log(error);
     if (error instanceof Error) throw new Error(error.message);
@@ -59,10 +71,14 @@ export const loginUser = async (data: TLoginInput) => {
  * @returns retorna al usuario con su sesion desactivada
  */
 
-export const logoutUser = async (id: string) => {
+export const logoutUser = async (id: number) => {
   try {
     // Verificar que la sesion exista en DB.
-    const foundUser = await User.findById(new ObjectId(id));
+    const foundUser = await prismaUser.findUnique({
+      where: {
+        id,
+      },
+    });
 
     if (!foundUser) throw new Error('Usuario no existe');
 
@@ -73,9 +89,16 @@ export const logoutUser = async (id: string) => {
     // si todo esta bien, se actualiza el campo session a false
     foundUser.session = false;
 
-    await foundUser.save();
+    const updatedUser = await prismaUser.update({
+      where: {
+        id: foundUser.id,
+      },
+      data: {
+        session: false,
+      },
+    });
 
-    return foundUser;
+    return updatedUser;
   } catch (error) {
     console.log(error);
     if (error instanceof Error) throw new Error(error.message);

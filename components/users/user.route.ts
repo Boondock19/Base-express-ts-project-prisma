@@ -16,7 +16,12 @@ import { validateJWT } from '../../middlewares/validateJWT';
 
 export const router: Router = Router();
 // get sin paginacion
-router.get('/', userGetPaginationsValidator, userController.userGet);
+router.get(
+  '/',
+  userGetPaginationsValidator,
+  validateJWT,
+  userController.userGet
+);
 
 router.get('/currentuser', validateJWT, userController.currentUserByIdGet);
 

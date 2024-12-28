@@ -1,5 +1,5 @@
-import jsonwebtoken from "jsonwebtoken";
-import dotenv from "dotenv";
+import jsonwebtoken from 'jsonwebtoken';
+import dotenv from 'dotenv';
 
 /**
  * Por alguna razon que desconozco dotenv me esta forzando a hacer el cargado
@@ -9,12 +9,12 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const secretKey = process.env.SECRET_KEY || "";
+const secretKey = process.env.SECRET_KEY || '';
 const jwt = jsonwebtoken;
 
 // Funcion para crear un jwt en base a un payload, en este caso es solo el id
-export const generateJWT = (payload: string) => {
-  const token = jwt.sign({ id: payload }, secretKey, { expiresIn: "6h" });
+export const generateJWT = (payload: number) => {
+  const token = jwt.sign({ id: payload }, secretKey, { expiresIn: '6h' });
 
   return token;
 };

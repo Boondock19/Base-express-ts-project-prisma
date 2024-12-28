@@ -1,7 +1,5 @@
 import express, { Express } from 'express';
 import cors from 'cors';
-
-import { dbConection } from '../db/config';
 import { router as userRouter } from '../components/users/user.route';
 import { router as authRouter } from '../components/auth/auth.route';
 
@@ -24,7 +22,6 @@ export class Server {
     this.authPath = '/api/auth';
 
     //
-    this.conectDB();
     // Middlewares
     this.middlewares();
     // Rutas de mi aplicación
@@ -40,10 +37,6 @@ export class Server {
 
     // Directorio público
     this.app.use(express.static('public'));
-  }
-
-  async conectDB() {
-    await dbConection();
   }
 
   routes() {

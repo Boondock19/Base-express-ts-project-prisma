@@ -1,10 +1,6 @@
+import { prisma } from '../../db/prismaClient';
 import { passwordEncrypt } from '../../helpers/passwordEncrypt';
-import mongoose from 'mongoose';
-import { User, UserDocument } from '../../models/user';
 import { TCreateUserInput, TUserSchema } from './user.dto';
-
-// Necesitamos esta constante para poder hacer cast de un string a un ObjectId de mongo.
-const ObjectId = mongoose.Types.ObjectId;
 
 /**
  * Funcion encargada de manejar la verificacion de los datos en la DB.
@@ -15,14 +11,30 @@ const ObjectId = mongoose.Types.ObjectId;
  * @returns al usuario creado en la base de datos.
  */
 
+const prismaUser = prisma.user;
 export const saveUser = async (
   data: TCreateUserInput
-): Promise<UserDocument> => {
+): Promise<TUserSchema> => {
   const { username, email, password } = data;
   try {
     // Verificar que el usuario no exista en DB.
     // Buscar el user por email que es unico
-    const foundUser = await User.findOne({ email });
+    const foundUser = await prismaUser.findFirst({
+      where: {
+        OR: [
+          {
+            username: {
+              equals: username,
+            },
+          },
+          {
+            email: {
+              equals: email,
+            },
+          },
+        ],
+      },
+    });
 
     if (foundUser) {
       throw new Error('El usuario ya existe');
@@ -32,13 +44,17 @@ export const saveUser = async (
     const passwordEncrypted = passwordEncrypt(password);
 
     // Crear usuario
-    const user = new User({ username, email, password: passwordEncrypted });
 
+    const newUser = await prismaUser.create({
+      data: {
+        username,
+        email,
+        password: passwordEncrypted,
+      },
+    });
     // Guardar en DB
 
-    await user.save();
-
-    return user;
+    return newUser as TUserSchema;
   } catch (error: any) {
     console.log(error);
     throw new Error(error.message);
@@ -46,18 +62,22 @@ export const saveUser = async (
 };
 
 /**
- * De momento esta funcion es utulizada por la ruta de currentuser,
+ * De momento esta función es utilizada por la ruta de currentuser,
  * pero se puede reutilizar para obtener a un usuario por su ID con
  * otra ruta.
  * Funcion encargarda de obtener a un usuario por su id
  * @param id id del usuario
  * @returns al susuario encontrado
  */
-export const getUserById = async (id: string) => {
+export const getUserById = async (id: number) => {
   try {
     if (!id) throw new Error('El id es requerido');
 
-    const foundUser = await User.findById(id);
+    const foundUser = await prismaUser.findUnique({
+      where: {
+        id: id,
+      },
+    });
 
     if (!foundUser) throw new Error('El usuario no existe');
 
@@ -77,11 +97,12 @@ export const getUserById = async (id: string) => {
 
 export const getUsers = async (page: number, limit: number) => {
   try {
-    const users = await User.find()
-      .limit(limit * 1)
-      .skip((page - 1) * limit);
+    const users = await prismaUser.findMany({
+      take: limit,
+      skip: (page - 1) * limit,
+    });
 
-    const totalUsers = await User.countDocuments();
+    const totalUsers = await prismaUser.count();
     return { users, totalUsers };
   } catch (error: any) {
     console.log(error);

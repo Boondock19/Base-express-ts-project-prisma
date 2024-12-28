@@ -12,7 +12,7 @@ import { validateJWT } from '../../middlewares/validateJWT';
 declare global {
   namespace Express {
     interface Request {
-      id: string;
+      id: number;
     }
   }
 }

@@ -1,9 +1,9 @@
 import jsonwebtoken from 'jsonwebtoken';
 import { Request, Response, NextFunction, response } from 'express';
-import { User } from '../models/user';
 
 import dotenv from 'dotenv';
 import { z } from 'zod';
+import { prisma } from '../db/prismaClient';
 
 /**
  * Por alguna razon que desconozco dotenv me esta forzando a hacer el cargado
@@ -16,7 +16,7 @@ dotenv.config();
 // Interfaz para darle tipado al payload del jwt
 
 const jwtPayload = z.object({
-  id: z.string(),
+  id: z.number(),
 });
 
 type TJwtPayload = z.infer<typeof jwtPayload>;
@@ -56,7 +56,11 @@ export const validateJWT = async (
 
     //Buscamos al usuario en la DB
 
-    const foundUser = await User.findById(payload.id);
+    const foundUser = await prisma.user.findUnique({
+      where: {
+        id: payload.id,
+      },
+    });
 
     if (!foundUser) {
       throw new Error('Usuario no encontrado');
